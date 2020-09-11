@@ -58,6 +58,8 @@ in sent directory.
 ** TODO Sync with cardav and completion in mail
 
 * Inbox
+** TODO ssh.el ?
+Are see if it exists other option
 ** TODO gather firefox bookmark and pocket
 I want one place where I can search for every thing with org spc
 - to gather pocket look at that [[https://github.com/alphapapa/pocket-reader.el][alphapapa /pocket-reader.el]]
