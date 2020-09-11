@@ -1,3 +1,8 @@
+#+TITLE: Doom config and more
+
+
+* Theme
+#+BEGIN_SRC elisp :tangle config.el
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
@@ -48,6 +53,13 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+#+END_SRC
+
+#+RESULTS:
+: t
+
+* UI
+#+BEGIN_SRC elisp :results silent :tangle config.el
 
 ;;; :ui
 (map! (:when (featurep! :ui popup)
@@ -90,7 +102,20 @@
 (define-key evil-window-map (kbd  "<left>") 'evil-window-left)
 (define-key evil-window-map (kbd "<up>") 'evil-window-up)
 (define-key evil-window-map (kbd "<down>") 'evil-window-down)
+#+END_SRC
+* org
+** Default app :hack:
+Not sure this a the best way to do it
+#+BEGIN_SRC elisp
+(delete '("\\.png\\'" . default) org-file-apps)
+(add-to-list 'org-file-apps '("\\.png\\'" . "feh %s"))
+#+END_SRC
 
+#+RESULTS:
+: ((\.png\' . feh %s) (auto-mode . emacs) (directory . emacs) (\.mm\' . default) (\.x?html?\' . default) (\.pdf\' . default))
+
+** Task management
+#+BEGIN_SRC elisp :tangle config.el :results silent
 ;; org capture
 ;;
 (after! org
@@ -115,6 +140,8 @@
                 "~/org/todo.org"
                 "~/org/notes.org"
                 "~/org/probayes/probayes.org"
+                "~/org/probayes/framatome/framatome.org"
+                "~/org/probayes/demoauto/demoauto.org"
                 )
       )
 
@@ -154,9 +181,38 @@
     ;; work a total of 12 months a year --
     ;; this is independent of holiday and sick time taken
     ("y" . ,(* 60 8 5 4 12))))
+#+END_SRC
+** TODO org agenda
 
+#+BEGIN_SRC elisp
+(map! :leader
+      (:when (featurep! :ui popup)
+       :desc "Open agenda"     "a"    #'+popup/toggle)
+      (:when (featurep! :ui workspaces)
+      :desc "Switch to last buffer" "&"    #'evil-switch-to-windows-last-buffer))
+(org-agenda)
+
+(defun cayek:agenda ()
+  "Activate (or switch to) `Org-Agenda'."
+  (interactive)
+  (org-agenda nil "a")
+  )
+
+#+END_SRC
+
+#+RESULTS:
+** TODO Org super agenda
+** TODO Notes
+#+BEGIN_SRC elisp :tangle config.el :results silent
 (setq deft-recursive t)
+(setq org-roam-tag-sources '(prop all-directories))
+#+END_SRC
 
+#+RESULTS:
+: t
+
+* Mail
+#+BEGIN_SRC elisp :tangle config.el
 (after! notmuch
   (setq send-mail-function 'sendmail-send-it
         sendmail-program "/usr/bin/msmtp"
@@ -166,3 +222,29 @@
         notmuch-message-headers-visible t
         )
 )
+#+END_SRC
+
+* Agenda
+* Images
+** Tools
+*** sxiv
+:LOGBOOK:
+- Note taken on [2020-09-10 jeu. 15:00] \\
+  see [[https://wiki.archlinux.org/index.php/Sxiv][Assigning keyboard shortcuts]]
+:END:
+#+BEGIN_SRC shell
+#!/bin/sh
+while read file
+do
+        case "$1" in
+        "C-r")
+                convert -rotate 90 "$file" "$file" ;;
+        "C-c")
+                echo -n "$file" | xclip -selection clipboard ;;
+        "C-w")
+                nitrogen --save --set-zoom-fill "$file" ;;
+        esac
+done
+#+END_SRC
+* Shell
+** eshell
