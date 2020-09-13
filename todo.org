@@ -54,6 +54,9 @@ For the moment draft mail on server are not draft in not mutch + I do not save
 in sent directory.
 * TODO Eshel
 *** TODO History
+*** TODO keep sudo password
+*** TODO ssh agent
+*** TODO pgp agent
 * TODO Contact
 ** TODO Sync with cardav and completion in mail
 
