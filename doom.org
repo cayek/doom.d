@@ -84,8 +84,20 @@
 
         :leader
         (:prefix-map ("TAB" . "workspace")
-        :desc "Display tab bar"           "." #'+workspace/display
-        :desc "Switch workspace"          "TAB"   #'+workspace/switch-to)
+        :desc "Display tab bar"           "TAB" #'+workspace/display
+        :desc "Switch to last workspace"          "a"   #'+workspace/other
+        :desc "Search workspace"          "z"   #'+workspace/switch-to
+        ;; for azerty keyboard
+        :desc "Switch to worspace 0"          "&"   #'+workspace/switch-to-0
+        :desc "Switch to workspace 1"          "é"   #'+workspace/switch-to-1
+        :desc "Switch to worspace 2"          "\""   #'+workspace/switch-to-2
+        :desc "Switch to worspace 3"          "'"   #'+workspace/switch-to-3
+        :desc "Switch to worspace 4"          "("   #'+workspace/switch-to-4
+        :desc "Switch to worspace 5"          "-"   #'+workspace/switch-to-5
+        :desc "Switch to worspace 6"          "è"   #'+workspace/switch-to-6
+        :desc "Switch to worspace 7"          "_"   #'+workspace/switch-to-7
+
+        )
 
         ))
 
@@ -124,63 +136,43 @@ Not sure this a the best way to do it
                  "* meeting with %? :MEETING:\n%U"
                  :clock-in t
                  :clock-resume t))
-  )
-
-;; org tag
-(setq org-tag-alist (quote ((:startgroup)
-                            ;; who is the client/owner ?
-                            ("@probayes" . ?s)
-                            ("@perso" . ?p)
-                            (:endgroup)
-                            )))
-
-;; org agenda
-(setq org-agenda-files
-              '("~/org/INBOX.org"
-                "~/org/todo.org"
-                "~/org/notes.org"
-                "~/org/probayes/probayes.org"
-                "~/org/probayes/framatome/framatome.org"
-                "~/org/probayes/demoauto/demoauto.org"
-                )
-      )
-
-
-(after! org
+  ;; org tag
+  (setq org-tag-alist (quote ((:startgroup)
+                              ;; who is the client/owner ?
+                              ("@probayes" . ?s)
+                              ("@perso" . ?p)
+                              (:endgroup)
+                              )))
+  ;; org agenda
+  (setq org-agenda-files
+        '("~/org/INBOX.org"
+          "~/org/todo.org"
+          "~/org/notes.org"
+          "~/org/probayes/probayes.org"
+          "~/org/probayes/framatome/framatome.org"
+          "~/org/probayes/demoauto/demoauto.org"
+          )
+        )
   (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3)
+  ;; Separate drawers for clocking and logs
+  (setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))
+  ;; Save clock data and state changes and notes in the LOGBOOK drawer
+  (setq org-clock-into-drawer t)
+  (setq org-log-state-notes-into-drawer t)
+
+  (setq org-duration-units
+        `(("min" . 1)
+          ("h" . 60)
+          ;; seven-hour days
+          ("d" . ,(* 60 7))
+          ;; five-day work week
+          ("w" . ,(* 60 8 5))
+          ;; four weeks in a month
+          ("m" . ,(* 60 8 5 4))
+          ;; work a total of 12 months a year --
+          ;; this is independent of holiday and sick time taken
+          ("y" . ,(* 60 8 5 4 12))))
 )
-
-;; Separate drawers for clocking and logs
-(setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))
-;; Save clock data and state changes and notes in the LOGBOOK drawer
-(setq org-clock-into-drawer t)
-(setq org-log-state-notes-into-drawer t)
-
-(setq org-effort-durations
-      `(("min" . 1)
-    ("h" . 60)
-    ;; seven-hour days
-    ("d" . ,(* 60 7))
-    ;; five-day work week
-    ("w" . ,(* 60 8 5))
-    ;; four weeks in a month
-    ("m" . ,(* 60 8 5 4))
-    ;; work a total of 12 months a year --
-    ;; this is independent of holiday and sick time taken
-    ("y" . ,(* 60 8 5 4 12))))
-
-(setq org-duration-units
-      `(("min" . 1)
-    ("h" . 60)
-    ;; seven-hour days
-    ("d" . ,(* 60 7))
-    ;; five-day work week
-    ("w" . ,(* 60 8 5))
-    ;; four weeks in a month
-    ("m" . ,(* 60 8 5 4))
-    ;; work a total of 12 months a year --
-    ;; this is independent of holiday and sick time taken
-    ("y" . ,(* 60 8 5 4 12))))
 #+END_SRC
 ** TODO org agenda
 
@@ -201,6 +193,20 @@ Not sure this a the best way to do it
 #+END_SRC
 
 #+RESULTS:
+*** Custom agenda view
+#+BEGIN_SRC elisp :results silent :tangle config.el
+(after! org
+  (setq org-agenda-custom-commands
+        '(("d" "Day" agenda "Day of work"
+          (
+           (org-agenda-span 1)
+           (org-agenda-start-with-log-mode '(closed clock state))
+           (org-agenda-start-with-clockreport-mode t)
+           )
+          )))
+  )
+#+END_SRC
+
 ** TODO Org super agenda
 ** TODO Notes
 #+BEGIN_SRC elisp :tangle config.el :results silent
@@ -248,3 +254,14 @@ done
 #+END_SRC
 * Shell
 ** eshell
+*** Keep sudo pass
+:LOGBOOK:
+- Note taken on [2020-09-14 lun. 20:40] \\
+  see https://emacs.stackexchange.com/questions/5608/how-to-let-eshell-remember-sudo-password-for-two-minutes
+
+  and to proper way to do that with doom (see [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#configuring-doom][Configuring Doom]])
+:END:
+
+#+BEGIN_SRC elisp
+(after! org)
+#+END_SRC
