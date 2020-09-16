@@ -9,7 +9,7 @@ add-github-remote:
 
 
 push-github:
-	@git push github master
+	@git push github develop
 
 
 
