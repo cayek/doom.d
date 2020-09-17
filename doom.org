@@ -59,7 +59,6 @@
 : t
 
 * UI
-
 ** Emacs
 #+BEGIN_SRC elisp :results silent :tangle config.el
 
@@ -70,19 +69,6 @@
        "C-x p" #'+popup/other)
 
       (:when (featurep! :ui workspaces)
-        :g "s-t"   #'+workspace/new
-        :g "s-T"   #'+workspace/display
-        :n "s-&"   #'+workspace/switch-to-0
-        :n "s-é"   #'+workspace/switch-to-1
-        :n "s-\""   #'+workspace/switch-to-2
-        :n "s-'"   #'+workspace/switch-to-3
-        :n "s-("   #'+workspace/switch-to-4
-        :n "s--"   #'+workspace/switch-to-5
-        :n "s-è"   #'+workspace/switch-to-6
-        :n "s-_"   #'+workspace/switch-to-7
-        :n "s-ç"   #'+workspace/switch-to-8
-        :n "s-à"   #'+workspace/switch-to-final
-        :n "s-<tab>"   #'+workspace/other
 
         :leader
         (:prefix-map ("TAB" . "workspace")
